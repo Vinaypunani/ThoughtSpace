@@ -8,6 +8,7 @@ const RedisStore = require('rate-limit-redis').default;
 const config = require('./config/env');
 const logger = require('./utils/logger');
 const redisClient = require('./config/redis');
+const authRoutes = require('./modules/auth/auth.routes');
 
 const app = express();
 
@@ -44,7 +45,7 @@ app.get('/health', (req, res) => {
 });
 
 const v1Router = express.Router();
-v1Router.use('/auth', (req, res) => res.status(501).send('Auth Route Placeholder'));
+v1Router.use('/auth', authRoutes);
 v1Router.use('/users', (req, res) => res.status(501).send('Users Route Placeholder'));
 v1Router.use('/posts', (req, res) => res.status(501).send('Posts Route Placeholder'));
 v1Router.use('/comments', (req, res) => res.status(501).send('Comments Route Placeholder'));

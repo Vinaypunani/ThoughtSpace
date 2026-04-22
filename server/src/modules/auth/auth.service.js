@@ -28,9 +28,9 @@ const authService = {
    */
   generateRefreshToken: async (userId) => {
     const tokenId = crypto.randomUUID();
-    const key = `refresh:${userId}:${tokenId}`;
+    const key = `refresh:${tokenId}`;
     
-    await redisClient.set(key, "1", "EX", REFRESH_TOKEN_TTL);
+    await redisClient.set(key, userId.toString(), "EX", REFRESH_TOKEN_TTL);
     
     return tokenId;
   },
@@ -59,10 +59,10 @@ const authService = {
    * Invalidates old refresh token and generates a new one
    */
   rotateRefreshToken: async (userId, oldTokenId) => {
-    const key = `refresh:${userId}:${oldTokenId}`;
-    const exists = await redisClient.get(key);
+    const key = `refresh:${oldTokenId}`;
+    const storedUserId = await redisClient.get(key);
     
-    if (!exists) {
+    if (!storedUserId || storedUserId !== userId.toString()) {
       throw ApiError.unauthorized('Refresh token expired or invalid');
     }
     
