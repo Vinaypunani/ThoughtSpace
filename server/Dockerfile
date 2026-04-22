@@ -13,6 +13,6 @@ COPY ecosystem.config.js ./
 # Install PM2 globally
 RUN npm install -g pm2
 
-EXPOSE 5000
+EXPOSE 3000
 
 CMD ["pm2-runtime", "ecosystem.config.js"]

@@ -40,7 +40,7 @@ app.use(limiter);
 
 // 2. Mount route placeholders
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date() });
+  res.status(200).json({ status: 'ok Hey', timestamp: new Date() });
 });
 
 const v1Router = express.Router();

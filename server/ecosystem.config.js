@@ -9,8 +9,7 @@ module.exports = {
     out_file: './logs/out.log',
     merge_logs: true,
     env: {
-      NODE_ENV: 'production',
-      PORT: 5000
+      NODE_ENV: 'production'
     }
   }]
 };
