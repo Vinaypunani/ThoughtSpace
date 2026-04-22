@@ -8,6 +8,8 @@ const RedisStore = require('rate-limit-redis').default;
 const config = require('./config/env');
 const logger = require('./utils/logger');
 const redisClient = require('./config/redis');
+const passport = require('passport');
+const { globalRateLimiter } = require('./middlewares/rateLimiter');
 const authRoutes = require('./modules/auth/auth.routes');
 
 const app = express();
@@ -28,16 +30,12 @@ const stream = {
 app.use(morgan('combined', { stream }));
 
 // Global Rate Limiter
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // limit each IP to 200 requests per windowMs
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
-});
-app.use(limiter);
+app.use(globalRateLimiter);
+
+// Initialize Passport for authentication strategies
+app.use(passport.initialize());
+require('./modules/auth/strategies/jwt.strategy'); // Initialize JWT strategy early
+// require('./modules/auth/strategies/google.strategy'); // Will be initialized if config is present
 
 // 2. Mount route placeholders
 app.get('/health', (req, res) => {
